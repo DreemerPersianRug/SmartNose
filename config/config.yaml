@@ -1,0 +1,5 @@
+first_run: false
+measurement_modes:
+  t_0: 40
+  t_1: 60
+timeout_under_measure: 10

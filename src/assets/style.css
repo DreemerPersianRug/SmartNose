@@ -1,0 +1,173 @@
+/* styles.css */
+
+@font-face {
+    font-family: 'Lato';
+    src: url('/fonts/Lato-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lato';
+    src: url('/fonts/Lato-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+body {
+    font-family: "Lato", sans-serif;
+    margin: 0;
+    background-color: #F7F7F7;
+}
+
+.header {
+    background-color: #222222;
+    height: 250px;
+    padding: 16px 0 0 0;
+}
+
+.header-emoji {
+    font-size: 48px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.header-title {
+    color: #FFFFFF;
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.header-description {
+    color: #CFCFCF;
+    margin: 4px auto;
+    text-align: center;
+    max-width: 384px;
+    font-family: 'Lato', sans-serif;
+}
+
+.graph-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+}
+
+.graph-container .graph {
+    flex: 3;  /* Увеличиваем ширину графика */
+    margin-right: 20px;
+}
+
+.graph-container .controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;  /* Размещаем кнопки ближе к правому краю */
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.button-container button {
+    padding: 8px 16px;  /* Уменьшенный padding */
+    font-size: 0.9em;  /* Уменьшенный размер шрифта */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s;
+    width: 200px;  /* Ограничение ширины */
+}
+
+.button-container button.start {
+    background-color: #3498db;
+    color: white;
+}
+
+.button-container button.start:hover {
+    background-color: #2980b9;
+}
+
+.button-container button.stop {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.button-container button.stop:hover {
+    background-color: #c0392b;
+}
+
+.dropdown-container {
+    margin-bottom: 20px;
+    width: 200px;  /* Ограничение ширины */
+}
+
+.dropdown-container .Select-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #000000;  /* Цвет текста в блоке выпадающего меню */
+}
+
+.dropdown-container .Select-menu-outer {
+    background-color: white;
+    color: #000000;
+}
+
+.dropdown-container .Select-option {
+    background-color: white;
+    color: #000000;
+}
+
+.dropdown-container .Select-option.is-selected {
+    background-color: #000000;
+    color: white;
+}
+
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;
+    width: 100%;  /* Указываем ширину блока */
+    height: 50px;  /* Указываем высоту блока */
+}
+
+.dropdown-container-devices {
+    margin-bottom: 20px;
+    width: 200px;  /* Ограничение ширины */
+}
+
+.dropdown-container-devices .Select-control {
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    color: #000000;  /* Цвет текста в блоке выпадающего меню */
+}
+
+.dropdown-container-devices .Select-menu-outer {
+    background-color: white;
+    color: #000000;
+}
+
+.dropdown-container-devices .Select-option {
+    background-color: white;
+    color: #000000;
+}
+
+.dropdown-container-devices .Select-option.is-selected {
+    background-color: #000000;
+    color: white;
+}
