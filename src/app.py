@@ -3,6 +3,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
+import plotly.subplots as sp
 import random
 import init
 from utils import PortScanner, SerialPortHandler
@@ -102,57 +103,21 @@ app.layout = html.Div(
     ]
 )
 
-data = []
+data_for_graph = []
 colors = {}
-countdown_value = config["timeout_under_measure"]
-
-""" @app.callback(
-    [Output('countdown-container', 'style'),
-    Output('countdown', 'children')],
-    [Input('start-button', 'n_clicks')],
-    [State('countdown-container', 'style')]
-)
-def start_countdown(n_clicks, current_style):
-    global countdown_value
-    print("start_countdown called")
-    if n_clicks > 0:
-        countdown_value = config["timeout_under_measure"]
-        print("Countdown started")
-        return {'display': 'flex', 'width': '100%', 'height': '50px'}, str(countdown_value)
-    return current_style, str(countdown_value)
-
-@app.callback(
-    Output('countdown', 'children'),
-    [Input('graph-update', 'n_intervals')],
-    [State('countdown-container', 'style')]
-)
-def update_countdown(n_intervals, current_style):
-    global countdown_value
-    print("update_countdown called")
-    if current_style.get('display') == 'flex':
-        if countdown_value > 0:
-            countdown_value -= 1
-            print("Countdown updated:", countdown_value)
-            return str(countdown_value)
-        else:
-            print("Countdown finished")
-            return ''
-    return str(countdown_value) """
+is_measuring = False
 
 @app.callback(
     Output('live-graph', 'figure'),
     [Input('graph-update', 'n_intervals'),
-    Input('start-button', 'n_clicks'),
-    Input('stop-button', 'n_clicks'),
-    Input('mode-dropdown', 'value'),
-    Input('device-dropdown', 'value')],
+     Input('start-button', 'n_clicks'),
+     Input('stop-button', 'n_clicks'),
+     Input('mode-dropdown', 'value'),
+     Input('device-dropdown', 'value')],
     [State('countdown-container', 'style')]
 )
 def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_style):
-    global data, colors
-
-    serial = SerialPortHandler(init.logger, device)
-    serial.open_serial_connection()
+    global data_for_graph, colors, is_measuring
 
     ctx = dash.callback_context
 
@@ -161,45 +126,65 @@ def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_s
     else:
         button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-    #if button_id == 'start-button' and start_clicks > stop_clicks and current_style.get('display') != 'flex':
-        data_1 = serial.read_data()
-        protocol = ProtocolHandler(data_1)
+    if button_id == 'start-button' and not is_measuring:
+        is_measuring = True
+    elif button_id == 'stop-button' and is_measuring:
+        is_measuring = False
+
+    if is_measuring:
+        serial = SerialPortHandler(init.logger, device)
+        serial.open_serial_connection()
+
+        data_from_serial = serial.read_data()
+        protocol = ProtocolHandler(data_from_serial)
         bin_arr = protocol.process()
         values = list(map(ProtocolHandler.parse_elem, bin_arr))
-        data.append(values)
-        print(data)
-    #elif button_id == 'stop-button' and stop_clicks > start_clicks:
-    #    data = []  
+        
+        if (len(values) == len(list(zip(*data_for_graph)))) or (len(data_for_graph) == 0):
+            data_for_graph.append(values)
 
-    traces = []
-    for i, series in enumerate(data):
+    fig = sp.make_subplots(rows=4, cols=2, subplot_titles=[f'Sensor {i+1}' for i in range(len(values))])
+
+    max_values = []
+    min_values = []
+    for i, series in enumerate(zip(*data_for_graph)):
         y_values = series
+        max_values.append(max(y_values))
+        min_values.append(min(y_values))
         x_values = [i for i in range(series.__len__())]
         if i not in colors:
             colors[i] = f'rgb({random.randint(0, 255)}, {random.randint(0, 255)}, {random.randint(0, 255)})'
-        trace = go.Scatter(
-            x=x_values,
-            y=y_values,
-            mode='lines',
-            name=f'Sensor {i+1}',
-            line=dict(color=colors[i]),
-            fill='tozeroy'  
+        row = (i // 2) + 1
+        col = (i % 2) + 1
+        fig.add_trace(
+            go.Scatter(
+                x=x_values,
+                y=y_values,
+                mode='lines',
+                name=f'Sensor {i+1}',
+                line=dict(color=colors[i]),
+                fill='tozeroy'
+            ),
+            row=row, col=col
         )
-        traces.append(trace)
 
-    return {
-        'data': traces,
-        'layout': go.Layout(
-            xaxis=dict(title='Time', range=[min(x_values), max(x_values)]),
-            yaxis=dict(title='Value', range=[min(y_values), max(y_values)]),
-            title=dict(text=f'Live Fuel Analytics ({mode})', y=0.95, x=0.5, xanchor='center', yanchor='top'),
-            plot_bgcolor='rgba(0,0,0,0)',  
-            paper_bgcolor='rgba(0,0,0,0)', 
-            font=dict(color='black'), 
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-            margin=dict(l=50, r=50, b=50, t=80, pad=4)
-        )
-    }
+    fig.update_layout(
+        title=dict(text=f'Live Fuel Analytics ({mode})', y=1, x=0.5, xanchor='center', yanchor='top'),
+        plot_bgcolor='rgba(0,0,0,0)',  
+        paper_bgcolor='rgba(0,0,0,0)', 
+        font=dict(color='black'), 
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        margin=dict(l=50, r=50, b=50, t=80, pad=4),
+        height=1000
+    )
+    
+    for i in range(len(values)):
+        row = (i // 2) + 1
+        col = (i % 2) + 1
+        fig.update_xaxes(title_text='Time', range=[0, len(data_for_graph)], row=row, col=col, title_font=dict(size=11))
+        fig.update_yaxes(title_text='Value', range=[min_values[i], max_values[i]], row=row, col=col, title_font=dict(size=11))
+
+    return fig
 
 if __name__ == "__main__":
-    app.run_server(debug=False, host='127.0.0.1', port=8055)
+    app.run_server(debug=False, host='127.0.0.1', port=8056)
