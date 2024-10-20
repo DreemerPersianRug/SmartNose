@@ -97,13 +97,13 @@ body {
     background-color: #2980b9;
 }
 
-.button-container button.stop {
-    background-color: #e74c3c;
+.button-container button.pause {
+    background-color: #e77e3c;
     color: white;
 }
 
-.button-container button.stop:hover {
-    background-color: #c0392b;
+.button-container button.pause:hover {
+    background-color: #e77e3cf7;
 }
 
 .dropdown-container {

@@ -66,7 +66,7 @@ app.layout = html.Div(
                             className="button-container",
                             children=[
                                 html.Button('Start Measurement', id='start-button', n_clicks=0, className="start"),
-                                html.Button('Stop Measurement', id='stop-button', n_clicks=0, className="stop"),
+                                html.Button('Pause Measurement', id='pause-button', n_clicks=0, className="pause"),
                             ]
                         ),
                         html.Div(
@@ -84,8 +84,7 @@ app.layout = html.Div(
                             children=[
                                 dcc.Dropdown(
                                     id="device-dropdown",
-                                    options=ap,
-                                    value=ap[-1]['value']
+                                    options=ap
                                 )
                             ]
                         ),
@@ -111,12 +110,12 @@ is_measuring = False
     Output('live-graph', 'figure'),
     [Input('graph-update', 'n_intervals'),
      Input('start-button', 'n_clicks'),
-     Input('stop-button', 'n_clicks'),
+     Input('pause-button', 'n_clicks'),
      Input('mode-dropdown', 'value'),
      Input('device-dropdown', 'value')],
     [State('countdown-container', 'style')]
 )
-def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_style):
+def update_graph(n_intervals, start_clicks, pause_clicks, mode, device, current_style):
     global data_for_graph, colors, is_measuring
 
     ctx = dash.callback_context
@@ -128,7 +127,7 @@ def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_s
 
     if button_id == 'start-button' and not is_measuring:
         is_measuring = True
-    elif button_id == 'stop-button' and is_measuring:
+    elif button_id == 'pause-button' and is_measuring:
         is_measuring = False
 
     if is_measuring:
@@ -187,4 +186,4 @@ def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_s
     return fig
 
 if __name__ == "__main__":
-    app.run_server(debug=False, host='127.0.0.1', port=8056)
+    app.run_server(debug=True, host='127.0.0.1', port=8056)
