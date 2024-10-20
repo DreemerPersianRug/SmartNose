@@ -188,3 +188,38 @@ body {
     border-radius: 10px;
     padding: 10px;
 }
+
+.table-and-description-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 300px;
+}
+
+.table-container {
+    flex: 2;
+    margin-right: 20px;
+}
+
+.description-container {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.description-container h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.description-container p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}

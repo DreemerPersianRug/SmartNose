@@ -2,6 +2,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
+import dash_table
 import plotly.graph_objs as go
 import plotly.subplots as sp
 import random
@@ -130,6 +131,58 @@ app.layout = html.Div(
                 )
             ]
         ),
+        html.Div(
+            className="table-and-description-container",
+            children=[
+                html.Div(
+                    className="table-container",
+                    children=[
+                        dash_table.DataTable(
+                            id='report-table',
+                            columns=[
+                                {"name": "Sensor", "id": "sensor"},
+                                {"name": "Min Value", "id": "min_value"},
+                                {"name": "Max Value", "id": "max_value"},
+                                {"name": "Avg Value", "id": "avg_value"},
+                            ],
+                            data=[
+                                {"sensor": f"Sensor {i+1}", "min_value": random.randint(10, 50), "max_value": random.randint(51, 100), "avg_value": round(random.uniform(10, 100), 2)}
+                                for i in range(4)
+                            ],
+                            style_table={'overflowX': 'auto', 'minHeight': '300px'},
+                            style_cell={
+                                'textAlign': 'left',
+                                'padding': '5px',
+                                'font-family': 'Lato, sans-serif',
+                            },
+                            style_header={
+                                'backgroundColor': '#3498db',
+                                'color': 'white',
+                                'fontWeight': 'bold'
+                            },
+                            style_data_conditional=[
+                                {
+                                    'if': {'row_index': 'odd'},
+                                    'backgroundColor': '#f2f2f2'
+                                },
+                                {
+                                    'if': {'row_index': 'even'},
+                                    'backgroundColor': 'white'
+                                }
+                            ]
+                        )
+                    ]
+                ),
+                html.Div(
+                    className="description-container",
+                    children=[
+                        html.H3("Measurement Summary"),
+                        html.P("This table provides a summary of the measurements taken from the sensors. The data includes the minimum, maximum, and average values for each sensor. This information can be used to analyze the quality of the fuel and optimize fuel management strategies."),
+                        html.P("For more detailed analysis, refer to the live graph above."),
+                    ]
+                )
+            ]
+        )
     ]
 )
 
