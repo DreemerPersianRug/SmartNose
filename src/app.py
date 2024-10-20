@@ -10,9 +10,10 @@ from utils import PortScanner, SerialPortHandler
 from utils import ProtocolHandler
 
 available_ports = PortScanner.port_list()
-ap = []
+
+availible_ports_list = []
 for value in available_ports:
-    ap.append({"label": value, "value": value})
+    availible_ports_list.append({"label": value, "value": value})
 
 config = init.config.read()
 
@@ -46,6 +47,35 @@ app.layout = html.Div(
             className="header",
         ),
         html.Div(
+            className="statistics-container",
+            children=[
+                html.Div(
+                    className="statistic",
+                    children=[
+                        dcc.Graph(
+                            id=f'pie-chart-{i}',
+                            figure={
+                                'data': [
+                                    go.Pie(
+                                        labels=['Category A', 'Category B', 'Category C'],
+                                        values=[random.randint(10, 100) for _ in range(3)],
+                                        textinfo='value',
+                                        hole=.4,
+                                        marker=dict(colors=[f'rgb({random.randint(0, 255)}, {random.randint(0, 255)}, {random.randint(0, 255)})' for _ in range(3)])
+                                    )
+                                ],
+                                'layout': go.Layout(
+                                    title=f'Statistic {i+1}',
+                                    height=200,
+                                    margin=dict(l=20, r=20, t=40, b=20)
+                                )
+                            }
+                        )
+                    ]
+                ) for i in range(4)
+            ]
+        ),
+        html.Div(
             className="graph-container",
             children=[
                 html.Div(
@@ -66,7 +96,7 @@ app.layout = html.Div(
                             className="button-container",
                             children=[
                                 html.Button('Start Measurement', id='start-button', n_clicks=0, className="start"),
-                                html.Button('Stop Measurement', id='stop-button', n_clicks=0, className="stop"),
+                                html.Button('Pause Measurement', id='pause-button', n_clicks=0, className="pause"),
                             ]
                         ),
                         html.Div(
@@ -84,8 +114,8 @@ app.layout = html.Div(
                             children=[
                                 dcc.Dropdown(
                                     id="device-dropdown",
-                                    options=ap,
-                                    value=ap[-1]['value']
+                                    options=availible_ports_list
+                                
                                 )
                             ]
                         ),
@@ -109,11 +139,13 @@ is_measuring = False
 
 @app.callback(
     Output('live-graph', 'figure'),
-    [Input('graph-update', 'n_intervals'),
-     Input('start-button', 'n_clicks'),
-     Input('stop-button', 'n_clicks'),
-     Input('mode-dropdown', 'value'),
-     Input('device-dropdown', 'value')],
+    [
+        Input('graph-update', 'n_intervals'),
+        Input('start-button', 'n_clicks'),
+        Input('pause-button', 'n_clicks'),
+        Input('mode-dropdown', 'value'),
+        Input('device-dropdown', 'value')
+    ],
     [State('countdown-container', 'style')]
 )
 def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_style):
@@ -128,7 +160,7 @@ def update_graph(n_intervals, start_clicks, stop_clicks, mode, device, current_s
 
     if button_id == 'start-button' and not is_measuring:
         is_measuring = True
-    elif button_id == 'stop-button' and is_measuring:
+    elif button_id == 'pause-button' and is_measuring:
         is_measuring = False
 
     if is_measuring:

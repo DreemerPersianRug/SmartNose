@@ -17,7 +17,7 @@
 body {
     font-family: "Lato", sans-serif;
     margin: 0;
-    background-color: #F7F7F7;
+    background-color: #f7f7f7;
 }
 
 .header {
@@ -59,7 +59,7 @@ body {
 }
 
 .graph-container .graph {
-    flex: 3;  /* Увеличиваем ширину графика */
+    flex: 3; 
     margin-right: 20px;
 }
 
@@ -68,7 +68,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: flex-end;  /* Размещаем кнопки ближе к правому краю */
+    align-items: flex-end; 
 }
 
 .button-container {
@@ -78,14 +78,14 @@ body {
 }
 
 .button-container button {
-    padding: 8px 16px;  /* Уменьшенный padding */
-    font-size: 0.9em;  /* Уменьшенный размер шрифта */
+    padding: 8px 16px;  
+    font-size: 0.9em;  
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-bottom: 10px;
     transition: background-color 0.3s;
-    width: 200px;  /* Ограничение ширины */
+    width: 200px; 
 }
 
 .button-container button.start {
@@ -97,25 +97,25 @@ body {
     background-color: #2980b9;
 }
 
-.button-container button.stop {
-    background-color: #e74c3c;
+.button-container button.pause {
+    background-color: #e77e3c;
     color: white;
 }
 
-.button-container button.stop:hover {
-    background-color: #c0392b;
+.button-container button.pause:hover {
+    background-color: #c0692b;
 }
 
 .dropdown-container {
     margin-bottom: 20px;
-    width: 200px;  /* Ограничение ширины */
+    width: 200px; 
 }
 
 .dropdown-container .Select-control {
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: white;
-    color: #000000;  /* Цвет текста в блоке выпадающего меню */
+    color: #000000;  
 }
 
 .dropdown-container .Select-menu-outer {
@@ -141,20 +141,20 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: #3498db;
-    width: 100%;  /* Указываем ширину блока */
-    height: 50px;  /* Указываем высоту блока */
+    width: 100%;  
+    height: 50px; 
 }
 
 .dropdown-container-devices {
     margin-bottom: 20px;
-    width: 200px;  /* Ограничение ширины */
+    width: 200px;  
 }
 
 .dropdown-container-devices .Select-control {
     border-radius: 5px;
     border: 1px solid #ccc;
     background-color: white;
-    color: #000000;  /* Цвет текста в блоке выпадающего меню */
+    color: #000000;  
 }
 
 .dropdown-container-devices .Select-menu-outer {
@@ -170,4 +170,21 @@ body {
 .dropdown-container-devices .Select-option.is-selected {
     background-color: #000000;
     color: white;
+}
+
+.statistics-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.statistic {
+    width: 23%;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
 }
